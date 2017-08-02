@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+
+<BorderPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.alexhyisen.dg.view.MainController">
+   <center>
+      <TableView fx:id="dataTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="labelTableColumn" prefWidth="100.0" text="label" />
+          <TableColumn fx:id="nameTableColumn" prefWidth="100.0" text="name" />
+          <TableColumn fx:id="clsTableColumn" prefWidth="150.0" text="class" />
+          <TableColumn fx:id="idTableColumn" prefWidth="150.0" text="id" />
+          <TableColumn fx:id="readonlyTableColumn" prefWidth="50.0" text="readonly" />
+          <TableColumn fx:id="requiredTableColumn" prefWidth="50.0" text="required" />
+        </columns>
+      </TableView>
+   </center>
+   <top>
+      <FlowPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="goButton" mnemonicParsing="false" onAction="#handleGoButtonAction" text="GO" />
+         </children>
+      </FlowPane>
+   </top>
+</BorderPane>
