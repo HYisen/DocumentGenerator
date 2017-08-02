@@ -38,8 +38,6 @@ public class HttpExtractor implements Extractor {
 
     public static void main(String[] args) throws Exception {
         Path p = Paths.get(".","sample.jsp");
-        new HttpExtractor().extract(p).forEach((k, v) -> System.out.println(k + " " + v.get("class")));
-        System.out.println("<input type=\"text\" class=\"easyui-datebox\" id=\"dtSettleDate1\">"
-                .matches("<.* id=.*>"));
+        Utility.printData(new HttpExtractor().extract(p));
     }
 }

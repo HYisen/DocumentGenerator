@@ -98,10 +98,6 @@ public class JsExtractor implements Extractor {
 
     public static void main(String[] args) throws Exception {
         Path p = Paths.get(".", "sample.js");
-        new JsExtractor().extract(p)
-                .forEach((k, v) -> {
-                    System.out.println(k);
-                    v.forEach((key, val) -> System.out.println("\t" + key + " " + val));
-                });
+        Utility.printData(new JsExtractor().extract(p));
     }
 }

@@ -1,5 +1,6 @@
 package net.alexhyisen.dg.model;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +14,13 @@ public class Utility {
             result = m.group(2);
         }
         return Optional.ofNullable(result);
+    }
+
+    static void printData(Map<String, Map<String, String>> orig) {
+        orig.forEach((k, v) -> {
+            System.out.println(k);
+            v.forEach((key, val) -> System.out.println("\t" + key + " " + val));
+        });
     }
 
     public static void main(String[] args) {
