@@ -5,6 +5,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HttpExtractor implements Extractor {
     @Override
@@ -14,11 +16,13 @@ public class HttpExtractor implements Extractor {
 //                .peek(System.out::println)
                 .map(String::trim)
                 .filter(v -> v.matches("<.* id=.*>"))
-                .peek(System.out::println)
+//                .peek(System.out::println)
                 .peek(v -> {
-                    Map<String, String> data = new LinkedHashMap<>();
+                    Map<String, String> item = new LinkedHashMap<>();
+
                     String id = Utility.get("id", v)
                             .orElseThrow(() -> new RuntimeException("can not find id"));
+
                     String cls;
                     if (v.startsWith("<form ")) {
                         cls = "form";
@@ -28,11 +32,20 @@ public class HttpExtractor implements Extractor {
                         cls = Utility.get("class", v)
                                 .orElseThrow(() -> new RuntimeException("can not find class"));
                     }
-                    data.put("class", cls);
-                    rtn.put(id, data);
+                    item.put("class", cls);
+
+                    Matcher m = Pattern.compile("<.*>(.*)<.*>").matcher(v);
+                    if (m.find()) {
+                        String label = m.group(1);
+                        if (!label.equals("")) {
+                            item.put("label", label);
+                        }
+                    }
+
+                    rtn.put(id, item);
                 })
                 .count();
-        System.out.println("complete " + cnt + " line(s)");
+//        System.out.println("complete " + cnt + " line(s)");
         return rtn;
     }
 
