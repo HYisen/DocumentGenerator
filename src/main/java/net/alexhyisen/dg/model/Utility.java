@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class Utility {
     //I do want to extend String with String.get().
-    public static Optional<String> get(String key, String orig) {
+    static Optional<String> get(String key, String orig) {
         Matcher m = Pattern.compile(".* " + key + "=([\"\'])(.*?)\\1.*").matcher(orig);
         String result = null;
         if (m.find()) {
