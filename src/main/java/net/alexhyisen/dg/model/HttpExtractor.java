@@ -25,7 +25,8 @@ public class HttpExtractor implements Extractor {
 
                     String cls;
                     if (v.startsWith("<form ")) {
-                        cls = "form";
+//                        cls = "form";
+                        return;
                     } else if (v.contains("type=\"checkbox\"")) {
                         cls = "checkbox";
                     } else {
