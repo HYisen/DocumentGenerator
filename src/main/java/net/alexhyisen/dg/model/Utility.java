@@ -1,5 +1,6 @@
 package net.alexhyisen.dg.model;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -16,12 +17,28 @@ public class Utility {
         return Optional.ofNullable(result);
     }
 
-    static void printData(Map<String, Map<String, String>> orig) {
+    public static void printData(Map<String, Map<String, String>> orig) {
         orig.forEach((k, v) -> {
             System.out.println(k);
             v.forEach((key, val) -> System.out.println("\t" + key + " " + val));
         });
     }
+
+    //lhs LEFT JOIN rhs
+    public static Map<String, Map<String, String>> merge(Map<String, Map<String, String>> lhs,
+                                                         Map<String, Map<String, String>> rhs) {
+        Map<String, Map<String, String>> rtn = new LinkedHashMap<>();
+        lhs.forEach((k, v) -> {
+            Map<String, String> item = new LinkedHashMap<>();
+            v.forEach(item::put);
+            if (rhs.containsKey(k)) {
+                rhs.get(k).forEach(item::put);
+            }
+            rtn.put(k, item);
+        });
+        return rtn;
+    }
+
 
     public static void main(String[] args) {
         String content = "<input type=\"text\" class=\"easyui-textbox\" id=\"tbDoctor\">";
