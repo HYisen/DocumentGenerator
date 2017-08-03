@@ -30,8 +30,14 @@ public class HttpExtractor implements Extractor {
                     } else if (v.contains("type=\"checkbox\"")) {
                         cls = "checkbox";
                     } else {
-                        cls = Utility.get("class", v)
-                                .orElseThrow(() -> new RuntimeException("can not find class"));
+                        try {
+                            cls = Utility.get("class", v)
+                                    .orElseThrow(() -> new RuntimeException("can not find class in\n"
+                                    +v));
+                        } catch (RuntimeException e) {
+                            e.printStackTrace();
+                            return;
+                        }
                     }
                     item.put("class", cls);
 
