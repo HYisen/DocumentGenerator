@@ -73,8 +73,10 @@ public class MainController {
         }
 
         try {
-            Map<String, Map<String, String>> htmlData = new HttpExtractor().extract(Paths.get(htmlTextField.getText()));
-            Map<String, Map<String, String>> jsData = new JsExtractor().extract(Paths.get(jsTextField.getText()));
+            Map<String, Map<String, String>> htmlData = new HttpExtractor().extract(
+                    Paths.get(htmlTextField.getText()));
+            Map<String, Map<String, String>> jsData = new JsExtractor().extract(
+                    Paths.get(jsTextField.getText()));
             update(Utility.merge(htmlData, jsData));
             dataTableView.refresh();
         } catch (Exception e) {
@@ -109,8 +111,21 @@ public class MainController {
             String readonly = v.getOrDefault("readonly", "");
             String required = v.getOrDefault("required", "");
 
-            //TODO generate name from id with cls
-            String name = "";
+            String name;
+            if (label.equals("") || cls.contains("button") || cls.contains("datagrid")) {
+                name = "";
+            } else {
+                char[] chars = id.toCharArray();
+                int index = 0;
+                for (int i = 0; i < chars.length; i++) {
+                    if (Character.isUpperCase(chars[i])) {
+                        index = i;
+                        break;
+                    }
+                }
+                chars[index] = Character.toLowerCase(chars[index]);
+                name = String.valueOf(chars).substring(index);
+            }
 
             Item item = new Item(label, name, cls, id, readonly, required);
             items.add(item);
