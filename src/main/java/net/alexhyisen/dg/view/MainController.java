@@ -7,10 +7,10 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
+import net.alexhyisen.dg.Utility;
 import net.alexhyisen.dg.model.HttpExtractor;
 import net.alexhyisen.dg.model.Item;
 import net.alexhyisen.dg.model.JsExtractor;
-import net.alexhyisen.dg.model.Utility;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -77,7 +77,7 @@ public class MainController {
                     Paths.get(htmlTextField.getText()));
             Map<String, Map<String, String>> jsData = new JsExtractor().extract(
                     Paths.get(jsTextField.getText()));
-            update(Utility.merge(htmlData, jsData));
+            Utility.transform(Utility.merge(htmlData, jsData), items);
             dataTableView.refresh();
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,37 +100,6 @@ public class MainController {
         if (file != null) {
             linkedTarget.setText(file.toPath().toString());
         }
-    }
-
-    private void update(Map<String, Map<String, String>> orig) {
-        items.clear();
-        orig.forEach((k, v) -> {
-            String label = v.getOrDefault("label", "");
-            String cls = v.getOrDefault("class", "");
-            String id = k;
-            String readonly = v.getOrDefault("readonly", "");
-            String required = v.getOrDefault("required", "");
-
-            String name;
-            if (label.equals("") || cls.contains("button") || cls.contains("datagrid")) {
-                name = "";
-            } else {
-                char[] chars = id.toCharArray();
-                int index = 0;
-                for (int i = 0; i < chars.length; i++) {
-                    if (Character.isUpperCase(chars[i])) {
-                        index = i;
-                        break;
-                    }
-                }
-                chars[index] = Character.toLowerCase(chars[index]);
-                name = String.valueOf(chars).substring(index);
-            }
-
-            Item item = new Item(label, name, cls, id, readonly, required);
-            items.add(item);
-        });
-        System.out.println("update complete");
     }
 
     private void makeTableViewCopyable() {

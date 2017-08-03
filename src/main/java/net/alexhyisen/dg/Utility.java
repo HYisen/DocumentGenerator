@@ -1,4 +1,7 @@
-package net.alexhyisen.dg.model;
+package net.alexhyisen.dg;
+
+import javafx.collections.ObservableList;
+import net.alexhyisen.dg.model.Item;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -8,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class Utility {
     //I do want to extend String with String.get().
-    static Optional<String> get(String key, String orig) {
+    public static Optional<String> get(String key, String orig) {
         Matcher m = Pattern.compile(".* " + key + "=([\"\'])(.*?)\\1.*").matcher(orig);
         String result = null;
         if (m.find()) {
@@ -37,6 +40,37 @@ public class Utility {
             rtn.put(k, item);
         });
         return rtn;
+    }
+
+    public static void transform(Map<String, Map<String, String>> src, ObservableList<Item> trg) {
+        trg.clear();
+        src.forEach((k, v) -> {
+            String label = v.getOrDefault("label", "");
+            String cls = v.getOrDefault("class", "");
+            String id = k;
+            String readonly = v.getOrDefault("readonly", "");
+            String required = v.getOrDefault("required", "");
+
+            String name;
+            if (label.equals("") || cls.contains("button") || cls.contains("datagrid")) {
+                name = "";
+            } else {
+                char[] chars = id.toCharArray();
+                int index = 0;
+                for (int i = 0; i < chars.length; i++) {
+                    if (Character.isUpperCase(chars[i])) {
+                        index = i;
+                        break;
+                    }
+                }
+                chars[index] = Character.toLowerCase(chars[index]);
+                name = String.valueOf(chars).substring(index);
+            }
+
+            Item item = new Item(label, name, cls, id, readonly, required);
+            trg.add(item);
+        });
+//        System.out.println("transform complete");
     }
 
 
