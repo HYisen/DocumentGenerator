@@ -24,7 +24,7 @@ public class HttpExtractor implements Extractor {
                             .orElseThrow(() -> new RuntimeException("can not find id"));
 
                     String cls;
-                    if (v.startsWith("<form ")) {
+                    if (v.startsWith("<form ") || v.startsWith("<div ")) {
 //                        cls = "form";
                         return;
                     } else if (v.contains("type=\"checkbox\"")) {
@@ -51,7 +51,7 @@ public class HttpExtractor implements Extractor {
     }
 
     public static void main(String[] args) throws Exception {
-        Path p = Paths.get(".","sample.jsp");
+        Path p = Paths.get(".", "sample.jsp");
         Utility.printData(new HttpExtractor().extract(p));
     }
 }
