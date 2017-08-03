@@ -41,7 +41,7 @@ public class JsExtractor implements Extractor {
 //                    System.out.println(id);
                     Map<String, String> item = new LinkedHashMap<>();
                     item.put("label", m.group(5));
-                    if (m.groupCount() >= 7) {
+                    if (m.groupCount() > 7) {
                         String option = m.group(7);
                         //canEdit to readonly
                         option = option.equals("true") ? "false" : "true";
