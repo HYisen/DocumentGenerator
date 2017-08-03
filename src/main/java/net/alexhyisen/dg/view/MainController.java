@@ -12,13 +12,16 @@ import net.alexhyisen.dg.model.Item;
 import net.alexhyisen.dg.model.JsExtractor;
 import net.alexhyisen.dg.model.Utility;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.Map;
 
 
 public class MainController {
+
     private MainApp mainApp;
+
+    private boolean initialized;
 
     private ObservableList<Item> items;
 
@@ -37,22 +40,12 @@ public class MainController {
     @FXML
     private TableView<Item> dataTableView;
     @FXML
-    private Button goButton;
+    private TextField htmlTextField;
+    @FXML
+    private TextField jsTextField;
 
     @FXML
     private void initialize() {
-        Path pJ = Paths.get(".", "sample.js");
-        Path pH = Paths.get(".", "sample.jsp");
-        Map<String, Map<String, String>> data;
-        try {
-            data = Utility.merge(
-                    new HttpExtractor().extract(pH),
-                    new JsExtractor().extract(pJ)
-            );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
         labelTableColumn.setCellValueFactory(v -> v.getValue().labelProperty());
         nameTableColumn.setCellValueFactory(v -> v.getValue().nameProperty());
         clsTableColumn.setCellValueFactory(v -> v.getValue().clsProperty());
@@ -64,21 +57,54 @@ public class MainController {
         dataTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         items = FXCollections.observableArrayList();
-        update(data);
         dataTableView.setItems(items);
 
+        initialized = false;
+
+        htmlTextField.setText(".\\sample.jsp");
+        jsTextField.setText(".\\sample.js");
     }
 
     @FXML
     protected void handleGoButtonAction() {
-        System.out.println("GO");
-        makeTableViewCopyable();
+        if (!initialized) {
+            makeTableViewCopyable();
+            initialized = true;
+        }
+
+        try {
+            Map<String, Map<String, String>> htmlData = new HttpExtractor().extract(Paths.get(htmlTextField.getText()));
+            Map<String, Map<String, String>> jsData = new JsExtractor().extract(Paths.get(jsTextField.getText()));
+            update(Utility.merge(htmlData, jsData));
+            dataTableView.refresh();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    protected void handleHtmlSelectButtonAction() {
+        selectFile("Select HTML File", htmlTextField);
+    }
+
+    @FXML
+    protected void handleJsSelectButtonAction() {
+        selectFile("Select JavaScript File", jsTextField);
+    }
+
+    private void selectFile(String title, TextField linkedTarget) {
+        File dir = Paths.get(linkedTarget.getText()).toFile().getParentFile();
+        File file = mainApp.openFile(title, dir);
+        if (file != null) {
+            linkedTarget.setText(file.toPath().toString());
+        }
     }
 
     private void update(Map<String, Map<String, String>> orig) {
+        items.clear();
         orig.forEach((k, v) -> {
             String label = v.getOrDefault("label", "");
-            String cls = v.getOrDefault("class","");
+            String cls = v.getOrDefault("class", "");
             String id = k;
             String readonly = v.getOrDefault("readonly", "");
             String required = v.getOrDefault("required", "");
@@ -89,6 +115,7 @@ public class MainController {
             Item item = new Item(label, name, cls, id, readonly, required);
             items.add(item);
         });
+        System.out.println("update complete");
     }
 
     private void makeTableViewCopyable() {

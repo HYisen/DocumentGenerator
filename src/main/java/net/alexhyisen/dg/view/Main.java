@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Path pJ = Paths.get(".","sample.js");
-        Path pH = Paths.get(".","sample.jsp");
+        Path pJ = Paths.get(".", "sample.js");
+        Path pH = Paths.get(".", "sample.jsp");
         Map<String, Map<String, String>> result = Utility.merge(
                 new HttpExtractor().extract(pH),
                 new JsExtractor().extract(pJ)
