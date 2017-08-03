@@ -90,6 +90,9 @@ public class JsExtractor implements Extractor {
                     case "readonly":
                         item.put("readonly", define);
                         break;
+                    case "text":
+                        item.put("label", define);
+                        break;
                 }
             }
         }
