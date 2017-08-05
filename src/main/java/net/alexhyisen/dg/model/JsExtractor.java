@@ -33,24 +33,32 @@ public class JsExtractor implements Extractor {
                 part.add(line);
                 isInside = true;
             } else if (line.startsWith("u.setup")) {
-                Matcher m = Pattern.compile("u\\.setup(Combo|Text)Box\\(options," +
-                        " ([\"\'])(.*?)\\2," +
-                        " ([\"\'])(.*?)\\4(, )?" +
-                        "(true|false)?.*").matcher(line);
-                if (m.find()) {
-//                    System.out.println(line);
-                    String id = m.group(3);
-//                    System.out.println(id);
-                    Map<String, String> item = new LinkedHashMap<>();
-                    item.put("label", m.group(5));
-                    if (m.groupCount() > 7) {
-                        String option = m.group(7);
-                        //canEdit to readonly
-                        option = option.equals("true") ? "false" : "true";
-                        item.put("readonly", option);
+                System.out.println(line);
+                String[] args = line.substring(line.indexOf(",") + 1, line.lastIndexOf(")")).split(",");
+                for (int i = 0; i < args.length; i++) {
+                    args[i] = args[i].trim();
+                    if (args[i].startsWith("\'") || args[i].startsWith("\"")) {
+                        args[i] = args[i].subSequence(1, args[i].length() - 1).toString();
                     }
-                    rtn.put(id, item);
                 }
+                Arrays.stream(args).forEach(System.out::println);
+
+                String id = args[0];
+                Map<String, String> item = new LinkedHashMap<>();
+                item.put("label", args[1]);
+                if (args.length > 2) {
+                    String option = args[2];
+                    //canEdit to readonly
+                    option = option.equals("true") ? "false" : "true";
+                    item.put("readonly", option);
+                }
+                for (int i = 3; i < args.length; i++) {
+                    if ("true".equals(args[i]) || "false".equals(args[i])) {
+                        item.put("required", args[i]);
+                    }
+                }
+                System.out.println("add " + id);
+                rtn.put(id, item);
             }
         }
 
