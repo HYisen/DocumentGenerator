@@ -8,9 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import net.alexhyisen.dg.Utility;
-import net.alexhyisen.dg.model.HttpExtractor;
-import net.alexhyisen.dg.model.Item;
-import net.alexhyisen.dg.model.JsExtractor;
+import net.alexhyisen.dg.model.*;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -24,6 +22,8 @@ public class MainController {
     private boolean initialized;
 
     private ObservableList<Item> items;
+
+    private Exporter exporter;
 
     @FXML
     private TableColumn<Item, String> labelTableColumn;
@@ -59,6 +59,9 @@ public class MainController {
         items = FXCollections.observableArrayList();
         dataTableView.setItems(items);
 
+        exporter = new Exporter();
+        exporter.setData(items);
+
         initialized = false;
 
         htmlTextField.setText(".\\sample.jsp");
@@ -79,6 +82,8 @@ public class MainController {
                     Paths.get(jsTextField.getText()));
             Utility.transform(Utility.merge(htmlData, jsData), items);
             dataTableView.refresh();
+
+            exporter.export(Paths.get(".","out.xlsx"));
         } catch (Exception e) {
             e.printStackTrace();
         }
